@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Crop Advisory system</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --accent: #ffab00;
+            --text: #263238;
+            --light-text: #78909c;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--primary-dark);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            color: var(--light-text);
+            font-size: 1.1rem;
+        }
+        
+        .search-container {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+        }
+        
+        input[type="text"] {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .result {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result h2 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .weather-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background-color: rgba(46, 125, 50, 0.08);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+        
+        h3 {
+            color: var(--primary-dark);
+            margin: 20px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        
+        .advice-list {
+            list-style: none;
+        }
+        
+        .advice-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .advice-item:last-child {
+            border-bottom: none;
+        }
+        
+        .advice-icon {
+            color: var(--accent);
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .weather-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌱 Smart Crop Advisory System</h1>
+            <p class="tagline">Get personalized farming recommendations based on local weather data</p>
+        </header>
+        
+        <div class="search-container">
+            <form method="POST">
+                <label for="city">Enter your location</label>
+                <input type="text" id="city" name="city" placeholder="e.g. Nairobi" required>
+                <button type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                    </svg>
+                    Get Crop Advice
+                </button>
+            </form>
+        </div>
+
+        {% if weather %}
+            <div class="result">
+                <h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M7 16a4 4 0 0 1-4-4V5a1 1 0 0 1 1-1h1V1a1 1 0 0 1 2 0v3h1a1 1 0 0 1 1 1v7a4 4 0 0 1-4 4zm3-9H6v5a3 3 0 0 0 6 0V7h-2z"/>
+                    </svg>
+                    Weather in {{ city }}
+                </h2>
+                
+                <div class="weather-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">{{ weather.max_temp }}°C</div>
+                        <div class="stat-label">Maximum Temperature</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">{{ weather.humidity }}%</div>
+                        <div class="stat-label">Humidity</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">{{ weather.rainfall }} mm</div>
+                        <div class="stat-label">Rainfall</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">{{ predicted_temp }}°C</div>
+                        <div class="stat-label">Predicted Average Temp</div>
+                    </div>
+                </div>
+                
+                <h3>Farming Recommendations</h3>
+                <ul class="advice-list">
+                    {% for item in advice %}
+                        <li class="advice-item">
+                            <span class="advice-icon">✓</span>
+                            {{ item }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        
+        <footer>
+            <p>Smart Crop Advisory &copy; 2025 | Helping farmers make data-driven decisions</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Add some simple animation when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add a slight delay effect to elements
+            const elements = document.querySelectorAll('.container > *');
+            elements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, 100 + (index * 100));
+            });
+        });
+    </script>
+</body>
+</html>
