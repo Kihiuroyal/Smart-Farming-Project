@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
-import requests# type: ignore
-import joblib # type: ignore
-import numpy as np # type: ignore
+import requests  # type: ignore
+import joblib  # type: ignore
+import numpy as np  # type: ignore
 
 app = Flask(__name__, template_folder='my_templates')
 model = joblib.load('temp_model.pkl')
@@ -14,11 +14,9 @@ def get_weather_data(city):
     response = requests.get(url)
     data = response.json()
     return {
-        
-        'max_temp':data["main"]["temp_max"],
-        'humidity': data['main']['humidity'],
+        'max_temp': data["main"]["temp_max"],
+        'humidity': data["main"]["humidity"],
         'rainfall': data.get('rain', {}).get('1h', 0)
-    
     }
 
 def generate_advice(temp, humidity, rainfall):
@@ -43,10 +41,10 @@ def index():
     if request.method == "POST":
         city = request.form["city"]
         weather = get_weather_data(city)
+
         features = np.array([[weather['max_temp'], weather['humidity'], weather['rainfall']]])
         predicted_temp = model.predict(features)[0]
         predicted_temp = round(predicted_temp, 1)
-        
 
         advice = generate_advice(predicted_temp, weather['humidity'], weather['rainfall'])
 
@@ -57,5 +55,8 @@ def index():
                                city=city)
     return render_template("project_frontend.html", weather=None)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+
+# ❗ REMOVE debug & do not run using app.run() on Vercel
+# Vercel will automatically detect `app` and serve it
+
+
